@@ -1,4 +1,5 @@
 import { analyzeWithESLint } from "./eslintService.js";
+import { generateReviewWithLLM } from "./llmService.js";
 import { buildReviewPrompt } from "./promptBuilderService.js";
 
 import { enrichAlertsWithContext } from "./contextEnrichmentService.js";
@@ -102,6 +103,55 @@ export async function buildPromptPreview({
     },
 
     prompt,
+  };
+}
+
+export async function buildGenerationPreview({
+  code,
+  filename,
+  environment,
+  maxContexts = 3,
+}) {
+  const preview = await buildPromptPreview({
+    code,
+    filename,
+    environment,
+    maxContexts,
+  });
+
+  if (preview.evidence.alertCount === 0) {
+    return {
+      evidence: preview.evidence,
+
+      prompt: {
+        version: preview.prompt.version,
+
+        metadata: preview.prompt.metadata,
+      },
+
+      generation: {
+        skipped: true,
+        reason: "no_static_alerts",
+      },
+    };
+  }
+
+  const generation = await generateReviewWithLLM({
+    systemPrompt: preview.prompt.systemPrompt,
+
+    userPrompt: preview.prompt.userPrompt,
+  });
+
+  return {
+    evidence: preview.evidence,
+
+    prompt: {
+      version: preview.prompt.version,
+
+      metadata: preview.prompt.metadata,
+    },
+
+    generation,
   };
 }
 

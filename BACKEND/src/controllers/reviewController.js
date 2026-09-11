@@ -7,6 +7,7 @@ import {
   runStaticReview,
   buildReviewEvidence,
   buildPromptPreview,
+  buildGenerationPreview,
 } from "../services/reviewService.js";
 
 export async function createReview(req, res) {
@@ -127,6 +128,52 @@ export async function createPromptPreview(req, res) {
       error: "prompt_preview_failed",
 
       message: "Não foi possível construir o preview do prompt.",
+    });
+  }
+}
+
+export async function createGenerationPreview(req, res) {
+  const validation = reviewEvidenceSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    return res.status(400).json({
+      error: "invalid_request",
+      message: "Os dados enviados são inválidos.",
+      details: validation.error.flatten(),
+    });
+  }
+
+  const { code, filename, environment, maxContexts } = validation.data;
+
+  try {
+    const result = await buildGenerationPreview({
+      code,
+      filename,
+      environment,
+      maxContexts,
+    });
+
+    return res.status(200).json({
+      stage: "llm_generation_preview",
+
+      scenario: null,
+
+      note: "Endpoint técnico para validar a primeira integração com o modelo de linguagem. Ainda não representa o cenário híbrido C3 definitivo.",
+
+      ...result,
+    });
+  } catch (error) {
+    console.error("Erro durante geração com LLM:", {
+      message: error.message,
+      status: error.status ?? null,
+      code: error.code ?? null,
+      requestId: error.request_id ?? null,
+    });
+
+    return res.status(500).json({
+      error: "llm_generation_failed",
+
+      message: "Não foi possível gerar a revisão com o modelo de linguagem.",
     });
   }
 }
