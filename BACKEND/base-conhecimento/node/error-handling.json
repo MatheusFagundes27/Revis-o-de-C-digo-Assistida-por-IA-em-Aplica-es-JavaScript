@@ -1,0 +1,34 @@
+{
+    "id": "node-error-handling",
+    "documentType": "best_practice",
+    "technology": "node",
+    "ruleId": null,
+    "environment": [
+      "node"
+    ],
+    "category": {
+      "id": "error_handling",
+      "label": "Tratamento de erros e fluxos assíncronos"
+    },
+    "title": "Propagação e tratamento de erros em Node.js",
+    "summary": "Apresenta princípios gerais para propagação e tratamento de erros em aplicações Node.js.",
+    "technicalReason": "Em Node.js, a forma como um erro é propagado depende do tipo de operação e da API utilizada. Exceções JavaScript podem ser tratadas com try/catch, enquanto operações assíncronas podem representar falhas por rejeição de Promises ou outros mecanismos definidos pelas APIs.",
+    "recommendation": "Tratar erros no nível adequado da aplicação e evitar ocultar falhas. Em código baseado em async/await, utilizar try/catch quando for necessário interceptar uma rejeição. Quando o erro não puder ser resolvido localmente, propagá-lo para uma camada responsável pelo tratamento.",
+    "severitySuggestion": null,
+    "source": {
+      "provider": "Node.js",
+      "document": "Errors — Error propagation and interception",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "node",
+      "errors",
+      "exceptions",
+      "try-catch",
+      "promise-rejection",
+      "error-handling"
+    ],
+    "content": "Node.js possui diferentes mecanismos de propagação e tratamento de erros conforme o tipo de API utilizada. Exceções JavaScript utilizam o mecanismo throw e podem ser interceptadas com try/catch. Operações assíncronas também podem representar falhas por rejeição de Promises. O tratamento deve preservar informações relevantes sobre a falha e evitar que erros sejam silenciosamente ignorados."
+  }

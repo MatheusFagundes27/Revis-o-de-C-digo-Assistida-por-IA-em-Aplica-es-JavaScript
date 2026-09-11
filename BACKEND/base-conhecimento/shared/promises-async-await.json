@@ -1,0 +1,35 @@
+{
+    "id": "shared-promises-async-await",
+    "documentType": "language_concept",
+    "technology": "javascript",
+    "ruleId": null,
+    "environment": [
+      "node",
+      "react"
+    ],
+    "category": {
+      "id": "error_handling",
+      "label": "Tratamento de erros e fluxos assíncronos"
+    },
+    "title": "Promises e async/await em JavaScript",
+    "summary": "Descreve o funcionamento geral de funções assíncronas, Promises e tratamento de rejeições em JavaScript.",
+    "technicalReason": "Funções declaradas com async sempre retornam uma Promise. Quando uma exceção não é tratada dentro da função assíncrona, a Promise retornada é rejeitada. O uso de await permite consumir operações baseadas em Promise e utilizar estruturas convencionais de try/catch para tratar falhas.",
+    "recommendation": "Utilizar async/await de forma consistente, tratar rejeições quando necessário e evitar fluxos em que Promises possam ser rejeitadas sem tratamento. Para operações concorrentes relacionadas, avaliar mecanismos como Promise.all ou Promise.allSettled conforme a semântica desejada.",
+    "severitySuggestion": null,
+    "source": {
+      "provider": "MDN Web Docs",
+      "document": "async function and Promise",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "javascript",
+      "promise",
+      "async",
+      "await",
+      "try-catch",
+      "asynchronous"
+    ],
+    "content": "Funções async sempre retornam uma Promise. Uma exceção não tratada dentro de uma função async provoca a rejeição da Promise retornada. O operador await suspende a execução da função até que a Promise correspondente seja concluída e permite utilizar estruturas try/catch ao redor de operações assíncronas. Rejeições devem ser tratadas ou propagadas de forma deliberada para evitar falhas não observadas."
+  }

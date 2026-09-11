@@ -1,0 +1,34 @@
+{
+    "id": "react-rules-of-hooks",
+    "documentType": "rule_documentation",
+    "technology": "react",
+    "ruleId": "react-hooks/rules-of-hooks",
+    "environment": [
+      "react"
+    ],
+    "category": {
+      "id": "best_practices",
+      "label": "Boas práticas em React e Node.js"
+    },
+    "title": "Regras de utilização de Hooks",
+    "summary": "Verifica se Hooks do React são chamados de maneira compatível com as Regras dos Hooks.",
+    "technicalReason": "O React depende da ordem consistente das chamadas de Hooks entre renderizações para associar corretamente estado e efeitos. Chamadas condicionais, dentro de loops ou após retornos antecipados podem modificar essa ordem e causar inconsistências de estado ou erros durante a renderização.",
+    "recommendation": "Chamar Hooks no nível superior do componente ou de um Hook personalizado. Condições necessárias devem ser colocadas dentro do próprio Hook sempre que possível, evitando chamadas condicionais.",
+    "severitySuggestion": "high",
+    "source": {
+      "provider": "React",
+      "document": "eslint-plugin-react-hooks / rules-of-hooks",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "react",
+      "hooks",
+      "useEffect",
+      "useState",
+      "rules-of-hooks",
+      "best-practices"
+    ],
+    "content": "A regra react-hooks/rules-of-hooks verifica se os Hooks do React são chamados de forma compatível com as Regras dos Hooks. O React depende da ordem das chamadas para preservar corretamente o estado entre renderizações. Hooks chamados dentro de condições, loops, callbacks ou após retornos antecipados podem alterar essa ordem. Recomenda-se realizar chamadas de Hooks no nível superior de componentes ou Hooks personalizados."
+  }

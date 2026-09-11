@@ -1,0 +1,34 @@
+{
+    "id": "eslint-no-unreachable",
+    "documentType": "rule_documentation",
+    "technology": "eslint",
+    "ruleId": "no-unreachable",
+    "environment": [
+      "node",
+      "react"
+    ],
+    "category": {
+      "id": "maintainability",
+      "label": "Manutenibilidade e estrutura"
+    },
+    "title": "Código inalcançável",
+    "summary": "Identifica instruções que não podem ser executadas devido ao encerramento anterior do fluxo de controle.",
+    "technicalReason": "Instruções posicionadas após comandos como return, throw, break ou continue podem se tornar inalcançáveis. Esse tipo de trecho normalmente representa código obsoleto, erro de lógica ou estrutura de controle inadequada, prejudicando a compreensão e a manutenção da aplicação.",
+    "recommendation": "Remover o trecho inalcançável quando ele não for necessário ou reorganizar o fluxo de controle caso a execução daquele código faça parte do comportamento esperado.",
+    "severitySuggestion": "medium",
+    "source": {
+      "provider": "ESLint",
+      "document": "no-unreachable",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "unreachable-code",
+      "control-flow",
+      "maintainability",
+      "javascript",
+      "eslint"
+    ],
+    "content": "A regra no-unreachable identifica instruções que não podem ser executadas porque o fluxo já foi encerrado por comandos como return, throw, break ou continue. Código inalcançável normalmente indica erro lógico ou trecho obsoleto e aumenta a dificuldade de manutenção. Recomenda-se remover o trecho quando ele não tiver função ou reorganizar o fluxo quando sua execução for necessária."
+  }

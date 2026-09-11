@@ -1,0 +1,35 @@
+{
+    "id": "eslint-no-promise-executor-return",
+    "documentType": "rule_documentation",
+    "technology": "eslint",
+    "ruleId": "no-promise-executor-return",
+    "environment": [
+      "node",
+      "react"
+    ],
+    "category": {
+      "id": "error_handling",
+      "label": "Tratamento de erros e fluxos assíncronos"
+    },
+    "title": "Retorno de valor no executor de Promise",
+    "summary": "Identifica retornos de valores dentro da função executora de uma Promise.",
+    "technicalReason": "O valor retornado diretamente pelo executor de uma Promise é ignorado e não altera o estado ou o resultado da Promise. Utilizar return com valor nesse contexto pode indicar interpretação incorreta do funcionamento da API e produzir um fluxo diferente do pretendido.",
+    "recommendation": "Utilizar resolve para produzir o valor de sucesso da Promise e reject para representar falhas. O retorno do executor deve ser utilizado apenas como controle de fluxo quando não possuir valor associado.",
+    "severitySuggestion": "medium",
+    "source": {
+      "provider": "ESLint",
+      "document": "no-promise-executor-return",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "promise",
+      "executor",
+      "return",
+      "error-handling",
+      "javascript",
+      "eslint"
+    ],
+    "content": "A regra no-promise-executor-return identifica retornos de valores dentro de executores de Promise. O valor retornado pelo executor é ignorado e não afeta o resultado da Promise. O fluxo correto deve utilizar resolve para indicar sucesso e reject para indicar falha. Retornos sem valor podem ser utilizados somente para interromper o fluxo interno da função executora."
+  }

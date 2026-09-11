@@ -1,0 +1,35 @@
+{
+    "id": "eslint-no-async-promise-executor",
+    "documentType": "rule_documentation",
+    "technology": "eslint",
+    "ruleId": "no-async-promise-executor",
+    "environment": [
+      "node",
+      "react"
+    ],
+    "category": {
+      "id": "error_handling",
+      "label": "Tratamento de erros e fluxos assíncronos"
+    },
+    "title": "Executor assíncrono em Promise",
+    "summary": "Identifica o uso de uma função async como executor do construtor Promise.",
+    "technicalReason": "O uso de async diretamente no executor de uma Promise pode dificultar o tratamento de erros. Exceções lançadas durante a execução assíncrona podem não produzir o comportamento esperado na Promise criada, e a presença de await dentro do executor pode indicar que o construtor Promise é desnecessário.",
+    "recommendation": "Evitar funções async diretamente no executor de new Promise. Sempre que possível, utilizar Promises já existentes, composição de operações assíncronas ou async/await em uma função externa ao construtor.",
+    "severitySuggestion": "high",
+    "source": {
+      "provider": "ESLint",
+      "document": "no-async-promise-executor",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "promise",
+      "async",
+      "await",
+      "error-handling",
+      "javascript",
+      "eslint"
+    ],
+    "content": "A regra no-async-promise-executor impede que uma função async seja utilizada diretamente como executor de new Promise. Esse padrão pode tornar o tratamento de erros menos previsível e dificultar a depuração. A utilização de await dentro do executor também pode indicar que não há necessidade de criar uma nova Promise manualmente. Recomenda-se utilizar composição de Promises ou async/await fora do construtor."
+  }

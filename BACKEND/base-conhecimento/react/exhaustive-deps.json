@@ -1,0 +1,35 @@
+{
+    "id": "react-exhaustive-deps",
+    "documentType": "rule_documentation",
+    "technology": "react",
+    "ruleId": "react-hooks/exhaustive-deps",
+    "environment": [
+      "react"
+    ],
+    "category": {
+      "id": "best_practices",
+      "label": "Boas práticas em React e Node.js"
+    },
+    "title": "Dependências de Hooks",
+    "summary": "Verifica se os arrays de dependências utilizados por Hooks contêm todos os valores necessários.",
+    "technicalReason": "Quando um valor utilizado dentro de Hooks como useEffect, useMemo ou useCallback não é incluído no array de dependências, o Hook pode continuar utilizando uma versão antiga desse valor. Esse comportamento pode gerar closures desatualizadas e resultados inconsistentes.",
+    "recommendation": "Incluir no array de dependências todos os valores utilizados pelo Hook que possam variar entre renderizações. Quando isso produzir execuções indesejadas, revisar a estrutura do componente em vez de omitir dependências apenas para silenciar o analisador.",
+    "severitySuggestion": "medium",
+    "source": {
+      "provider": "React",
+      "document": "eslint-plugin-react-hooks / exhaustive-deps",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "react",
+      "hooks",
+      "dependencies",
+      "useEffect",
+      "useMemo",
+      "useCallback",
+      "stale-closure"
+    ],
+    "content": "A regra react-hooks/exhaustive-deps verifica se Hooks que utilizam arrays de dependências declaram todos os valores necessários. A ausência de uma dependência pode fazer o Hook utilizar valores antigos e criar stale closures. Recomenda-se informar corretamente as dependências e, quando isso provocar comportamento indesejado, revisar a estrutura do componente em vez de remover dependências artificialmente."
+  }

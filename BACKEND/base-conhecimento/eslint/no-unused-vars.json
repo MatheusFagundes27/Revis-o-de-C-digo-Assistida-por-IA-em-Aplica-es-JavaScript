@@ -1,0 +1,34 @@
+{
+    "id": "eslint-no-unused-vars",
+    "documentType": "rule_documentation",
+    "technology": "eslint",
+    "ruleId": "no-unused-vars",
+    "environment": [
+      "node",
+      "react"
+    ],
+    "category": {
+      "id": "readability",
+      "label": "Legibilidade e clareza"
+    },
+    "title": "Variáveis declaradas e não utilizadas",
+    "summary": "Identifica variáveis, funções ou parâmetros declarados que não são utilizados no código.",
+    "technicalReason": "Elementos declarados e não utilizados podem indicar refatoração incompleta, código obsoleto ou erros de implementação. Além disso, aumentam o volume de informações que precisam ser interpretadas pelo desenvolvedor e podem causar confusão durante a leitura do código.",
+    "recommendation": "Remover a declaração quando ela não for necessária. Caso o elemento faça parte da lógica pretendida, verificar se ele deveria estar sendo utilizado em algum ponto do fluxo.",
+    "severitySuggestion": "low",
+    "source": {
+      "provider": "ESLint",
+      "document": "no-unused-vars",
+      "official": true,
+      "retrievedAt": "2026-09-11",
+      "sourceLanguage": "en"
+    },
+    "tags": [
+      "unused-variable",
+      "readability",
+      "refactoring",
+      "javascript",
+      "eslint"
+    ],
+    "content": "A regra no-unused-vars identifica variáveis, funções ou parâmetros declarados que não são utilizados. Esse padrão pode indicar refatoração incompleta, código obsoleto ou implementação incompleta, além de introduzir elementos desnecessários que dificultam a leitura. Quando o elemento não possuir função no fluxo da aplicação, recomenda-se removê-lo. Caso sua existência seja intencional, deve-se verificar se ele deixou de ser utilizado por engano."
+  }
