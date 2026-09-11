@@ -5,6 +5,8 @@ import {
 
 import {
   runStaticReview,
+  runLLMOnlyReview,
+  runHybridReview,
   buildReviewEvidence,
   buildPromptPreview,
   buildGenerationPreview,
@@ -16,37 +18,67 @@ export async function createReview(req, res) {
   if (!validation.success) {
     return res.status(400).json({
       error: "invalid_request",
+
       message: "Os dados enviados são inválidos.",
+
       details: validation.error.flatten(),
     });
   }
 
-  const { code, filename, environment, mode } = validation.data;
-
-  if (mode !== "static") {
-    return res.status(501).json({
-      error: "mode_not_implemented",
-      message: `O modo '${mode}' ainda não foi implementado.`,
-    });
-  }
+  const { code, filename, environment, mode, maxContexts } = validation.data;
 
   try {
-    const review = await runStaticReview({
+    if (mode === "static") {
+      const result = await runStaticReview({
+        code,
+        filename,
+        environment,
+      });
+
+      return res.status(200).json({
+        scenario: "C1",
+        mode: "static",
+        ...result,
+      });
+    }
+
+    if (mode === "llm") {
+      const result = await runLLMOnlyReview({
+        code,
+        filename,
+        environment,
+      });
+
+      return res.status(200).json({
+        scenario: "C2",
+        mode: "llm",
+        ...result,
+      });
+    }
+
+    const result = await runHybridReview({
       code,
       filename,
       environment,
+      maxContexts,
     });
 
     return res.status(200).json({
-      scenario: "static",
-      ...review,
+      scenario: "C3",
+      mode: "hybrid",
+      ...result,
     });
   } catch (error) {
-    console.error("Erro ao executar análise estática:", error);
+    console.error("Erro durante execução da revisão:", {
+      mode,
+      message: error.message,
+      cause: error.cause?.message ?? null,
+    });
 
     return res.status(500).json({
-      error: "static_analysis_failed",
-      message: "Não foi possível executar a análise estática.",
+      error: "review_execution_failed",
+
+      message: "Não foi possível executar a revisão.",
     });
   }
 }

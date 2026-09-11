@@ -5,7 +5,11 @@ import { getLLMConfig } from "../../config/llmConfig.js";
 let ollamaClient = null;
 let currentHost = null;
 
-export async function generateWithOllama({ systemPrompt, userPrompt }) {
+export async function generateWithOllama({
+  systemPrompt,
+  userPrompt,
+  outputFormat,
+}) {
   const config = getLLMConfig().ollama;
 
   const client = getOllamaClient(config.baseUrl);
@@ -28,7 +32,7 @@ export async function generateWithOllama({ systemPrompt, userPrompt }) {
 
     stream: false,
 
-    format: "json",
+    format: outputFormat,
 
     options: {
       temperature: config.temperature,
