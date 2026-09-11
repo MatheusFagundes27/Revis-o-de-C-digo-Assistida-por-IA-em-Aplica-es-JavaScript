@@ -1,4 +1,5 @@
 import { analyzeWithESLint } from "./eslintService.js";
+import { buildReviewPrompt } from "./promptBuilderService.js";
 
 import { enrichAlertsWithContext } from "./contextEnrichmentService.js";
 
@@ -66,6 +67,41 @@ export async function buildReviewEvidence({
 
       totalContexts,
     },
+  };
+}
+
+export async function buildPromptPreview({
+  code,
+  filename,
+  environment,
+  maxContexts = 3,
+}) {
+  const evidence = await buildReviewEvidence({
+    code,
+    filename,
+    environment,
+    maxContexts,
+  });
+
+  const prompt = buildReviewPrompt({
+    code,
+    evidence,
+  });
+
+  return {
+    evidence: {
+      environment: evidence.environment,
+
+      filename: evidence.filename,
+
+      alertCount: evidence.retrieval.alertCount,
+
+      alertsWithContext: evidence.retrieval.alertsWithContext,
+
+      totalContexts: evidence.retrieval.totalContexts,
+    },
+
+    prompt,
   };
 }
 
