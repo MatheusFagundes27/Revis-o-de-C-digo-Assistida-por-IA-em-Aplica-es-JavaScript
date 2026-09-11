@@ -167,3 +167,89 @@ análise estática seja adequada ao contexto real do código submetido.
 
 Essa decisão também está alinhada ao escopo do TCC, que contempla
 aplicações JavaScript com React no frontend e Node.js no backend.
+
+
+# Etapa 4 — Classificação dos Alertas nas Categorias do TCC
+
+## Objetivo
+
+Associar os alertas determinísticos produzidos pelo ESLint às categorias
+de qualidade definidas no escopo metodológico do trabalho.
+
+As categorias utilizadas são:
+
+- Legibilidade e clareza;
+- Manutenibilidade e estrutura;
+- Tratamento de erros e fluxos assíncronos;
+- Boas práticas em React e Node.js.
+
+---
+
+## Estratégia de classificação
+
+A classificação não é realizada diretamente pelo ESLint.
+
+O ESLint fornece o identificador determinístico da regra violada, e o
+CodeReview AI utiliza um catálogo interno para associar determinadas
+regras às categorias definidas na pesquisa.
+
+O fluxo implementado é:
+
+Regra ESLint
+→ Catálogo de regras
+→ Categoria do TCC
+
+Regras que ainda não possuem uma associação considerada segura permanecem
+sem categoria, utilizando valor `null`.
+
+Essa estratégia evita classificações artificiais ou não justificadas.
+
+---
+
+## Estrutura criada
+
+Foram criados os arquivos:
+
+- `src/config/reviewCategories.js`;
+- `src/config/ruleCatalog.js`;
+- `src/services/ruleClassificationService.js`.
+
+O arquivo `reviewCategories.js` centraliza as categorias definidas na
+pesquisa.
+
+O arquivo `ruleCatalog.js` mantém o mapeamento entre regras do ESLint e
+categorias.
+
+O serviço `ruleClassificationService.js` é responsável por consultar
+esse catálogo e retornar a classificação correspondente.
+
+---
+
+## Estrutura dos alertas
+
+Os alertas passaram a possuir os seguintes campos:
+
+- source;
+- ruleId;
+- category;
+- environment;
+- message;
+- line;
+- column;
+- endLine;
+- endColumn;
+- severity.
+
+Exemplo:
+
+```json
+{
+  "source": "eslint",
+  "ruleId": "react-hooks/rules-of-hooks",
+  "category": {
+    "id": "best_practices",
+    "label": "Boas práticas em React e Node.js"
+  },
+  "environment": "react",
+  "severity": "error"
+}

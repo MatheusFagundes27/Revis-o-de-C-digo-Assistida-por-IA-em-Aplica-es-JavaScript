@@ -1,6 +1,7 @@
 import { ESLint } from "eslint";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
+import { classifyRule } from "./ruleClassificationService.js";
 
 export async function analyzeWithESLint({ code, filename, environment }) {
   const eslint = createESLint(environment);
@@ -11,20 +12,31 @@ export async function analyzeWithESLint({ code, filename, environment }) {
 
   const result = results[0];
 
-  const alerts = result.messages.map((message) => ({
-    ruleId:
-      message.ruleId ?? (message.fatal ? "parser-error" : "eslint-warning"),
+  const alerts = result.messages.map((message) => {
+    const ruleId =
+      message.ruleId ?? (message.fatal ? "parser-error" : "eslint-warning");
 
-    message: message.message,
+    const category = classifyRule(ruleId);
 
-    line: message.line ?? null,
-    column: message.column ?? null,
+    return {
+      source: "eslint",
+      ruleId,
 
-    endLine: message.endLine ?? null,
-    endColumn: message.endColumn ?? null,
+      category,
 
-    severity: normalizeSeverity(message.severity),
-  }));
+      environment,
+
+      message: message.message,
+
+      line: message.line ?? null,
+      column: message.column ?? null,
+
+      endLine: message.endLine ?? null,
+      endColumn: message.endColumn ?? null,
+
+      severity: normalizeSeverity(message.severity),
+    };
+  });
 
   return {
     errorCount: result.errorCount,
@@ -85,6 +97,10 @@ function createESLint(environment) {
           "no-unreachable": "error",
           eqeqeq: "warn",
           "no-constant-condition": "warn",
+
+          // Fluxos assíncronos / Promises
+          "no-async-promise-executor": "error",
+          "no-promise-executor-return": "warn",
 
           // Regras específicas de React
           ...(isReact
