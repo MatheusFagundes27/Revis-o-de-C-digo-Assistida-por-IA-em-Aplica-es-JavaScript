@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
+
 import reviewRoutes from "./routes/reviewRoutes.js";
+import knowledgeRoutes from "./routes/knowledgeRoutes.js";
 
 const app = express();
 
@@ -20,5 +22,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/knowledge", knowledgeRoutes);
 
 export default app;
