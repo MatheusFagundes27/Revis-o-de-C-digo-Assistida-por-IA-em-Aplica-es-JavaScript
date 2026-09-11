@@ -125,3 +125,45 @@ desabilitar a regra `no-undef`, permitindo que referências realmente
 não declaradas, como variáveis inexistentes, continuem sendo
 identificadas.
 
+# Etapa 3 — Diferenciação entre Node.js e React
+
+## Objetivo
+
+Adaptar o módulo de análise estática para considerar diferenças
+entre códigos executados em ambiente Node.js e códigos pertencentes
+a aplicações React executadas no navegador.
+
+## Implementação
+
+Foi adicionado ao contrato da API o campo `environment`, que aceita:
+
+- `node`;
+- `react`.
+
+O RuleChecker passou a construir dinamicamente a configuração do ESLint
+conforme o ambiente informado.
+
+Para códigos Node.js são utilizadas as variáveis globais desse ambiente.
+
+Para códigos React são consideradas as variáveis globais do navegador,
+suporte à sintaxe JSX e regras específicas relacionadas ao uso de Hooks.
+
+## Dependências adicionadas
+
+- `globals`;
+- `eslint-plugin-react-hooks`.
+
+## Regras específicas de React
+
+Foram adicionadas inicialmente:
+
+- `react-hooks/rules-of-hooks`;
+- `react-hooks/exhaustive-deps`.
+
+## Justificativa
+
+A diferenciação de ambientes reduz falsos positivos e permite que a
+análise estática seja adequada ao contexto real do código submetido.
+
+Essa decisão também está alinhada ao escopo do TCC, que contempla
+aplicações JavaScript com React no frontend e Node.js no backend.

@@ -12,7 +12,7 @@ export async function createReview(req, res) {
     });
   }
 
-  const { code, filename, mode } = validation.data;
+  const { code, filename, environment, mode } = validation.data;
 
   if (mode !== "static") {
     return res.status(501).json({
@@ -21,12 +21,20 @@ export async function createReview(req, res) {
     });
   }
 
+  const effectiveFilename =
+    filename ?? (environment === "react" ? "snippet.jsx" : "snippet.js");
+
   try {
-    const analysis = await analyzeWithESLint(code, filename);
+    const analysis = await analyzeWithESLint({
+      code,
+      filename: effectiveFilename,
+      environment,
+    });
 
     return res.status(200).json({
       scenario: "static",
-      filename,
+      environment,
+      filename: effectiveFilename,
       analysis,
     });
   } catch (error) {

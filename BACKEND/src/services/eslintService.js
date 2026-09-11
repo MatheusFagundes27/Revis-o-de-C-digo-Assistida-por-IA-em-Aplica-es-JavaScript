@@ -1,29 +1,10 @@
 import { ESLint } from "eslint";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
 
-const eslint = new ESLint({
-  overrideConfigFile: true,
+export async function analyzeWithESLint({ code, filename, environment }) {
+  const eslint = createESLint(environment);
 
-  overrideConfig: {
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-
-      globals: {
-        console: "readonly",
-      },
-    },
-
-    rules: {
-      "no-unused-vars": "warn",
-      "no-undef": "error",
-      "no-unreachable": "error",
-      eqeqeq: "warn",
-      "no-constant-condition": "warn",
-    },
-  },
-});
-
-export async function analyzeWithESLint(code, filename = "snippet.js") {
   const results = await eslint.lintText(code, {
     filePath: filename,
   });
@@ -31,12 +12,17 @@ export async function analyzeWithESLint(code, filename = "snippet.js") {
   const result = results[0];
 
   const alerts = result.messages.map((message) => ({
-    ruleId: message.ruleId ?? "parser-error",
+    ruleId:
+      message.ruleId ?? (message.fatal ? "parser-error" : "eslint-warning"),
+
     message: message.message,
-    line: message.line,
-    column: message.column,
+
+    line: message.line ?? null,
+    column: message.column ?? null,
+
     endLine: message.endLine ?? null,
     endColumn: message.endColumn ?? null,
+
     severity: normalizeSeverity(message.severity),
   }));
 
@@ -45,6 +31,72 @@ export async function analyzeWithESLint(code, filename = "snippet.js") {
     warningCount: result.warningCount,
     alerts,
   };
+}
+
+function createESLint(environment) {
+  const isReact = environment === "react";
+
+  const environmentGlobals = isReact
+    ? {
+        ...globals.browser,
+        ...globals.es2021,
+      }
+    : {
+        ...globals.node,
+        ...globals.es2021,
+      };
+
+  const supportedFiles = isReact
+    ? ["**/*.js", "**/*.jsx", "**/*.mjs", "**/*.cjs"]
+    : ["**/*.js", "**/*.mjs", "**/*.cjs"];
+
+  return new ESLint({
+    overrideConfigFile: true,
+
+    overrideConfig: [
+      {
+        files: supportedFiles,
+
+        languageOptions: {
+          ecmaVersion: "latest",
+          sourceType: "module",
+
+          parserOptions: isReact
+            ? {
+                ecmaFeatures: {
+                  jsx: true,
+                },
+              }
+            : {},
+
+          globals: environmentGlobals,
+        },
+
+        plugins: isReact
+          ? {
+              "react-hooks": reactHooks,
+            }
+          : {},
+
+        rules: {
+          // Regras gerais
+          "no-unused-vars": "warn",
+          "no-undef": "error",
+          "no-unreachable": "error",
+          eqeqeq: "warn",
+          "no-constant-condition": "warn",
+
+          // Regras específicas de React
+          ...(isReact
+            ? {
+                "react-hooks/rules-of-hooks": "error",
+                "react-hooks/exhaustive-deps": "warn",
+              }
+            : {}),
+        },
+      },
+    ],
+  });
 }
 
 function normalizeSeverity(severity) {
