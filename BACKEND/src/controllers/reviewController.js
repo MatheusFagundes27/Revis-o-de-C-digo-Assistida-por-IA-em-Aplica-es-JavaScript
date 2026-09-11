@@ -1,5 +1,12 @@
-import { reviewRequestSchema } from "../validators/reviewValidator.js";
-import { analyzeWithESLint } from "../services/eslintService.js";
+import {
+  reviewRequestSchema,
+  reviewEvidenceSchema,
+} from "../validators/reviewValidator.js";
+
+import {
+  runStaticReview,
+  buildReviewEvidence,
+} from "../services/reviewService.js";
 
 export async function createReview(req, res) {
   const validation = reviewRequestSchema.safeParse(req.body);
@@ -21,28 +28,63 @@ export async function createReview(req, res) {
     });
   }
 
-  const effectiveFilename =
-    filename ?? (environment === "react" ? "snippet.jsx" : "snippet.js");
-
   try {
-    const analysis = await analyzeWithESLint({
+    const review = await runStaticReview({
       code,
-      filename: effectiveFilename,
+      filename,
       environment,
     });
 
     return res.status(200).json({
       scenario: "static",
-      environment,
-      filename: effectiveFilename,
-      analysis,
+      ...review,
     });
   } catch (error) {
-    console.error("Erro ao executar ESLint:", error);
+    console.error("Erro ao executar análise estática:", error);
 
     return res.status(500).json({
       error: "static_analysis_failed",
       message: "Não foi possível executar a análise estática.",
+    });
+  }
+}
+
+export async function createEvidencePreview(req, res) {
+  const validation = reviewEvidenceSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    return res.status(400).json({
+      error: "invalid_request",
+      message: "Os dados enviados são inválidos.",
+      details: validation.error.flatten(),
+    });
+  }
+
+  const { code, filename, environment, maxContexts } = validation.data;
+
+  try {
+    const evidence = await buildReviewEvidence({
+      code,
+      filename,
+      environment,
+      maxContexts,
+    });
+
+    return res.status(200).json({
+      stage: "pre_generation_evidence",
+
+      scenario: null,
+
+      note: "Endpoint técnico para validação da integração entre análise estática e recuperação de contexto. Não representa o cenário híbrido C3.",
+
+      ...evidence,
+    });
+  } catch (error) {
+    console.error("Erro ao construir evidências da revisão:", error);
+
+    return res.status(500).json({
+      error: "review_evidence_failed",
+      message: "Não foi possível construir as evidências da revisão.",
     });
   }
 }
