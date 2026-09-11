@@ -1,6 +1,7 @@
 import { analyzeWithESLint } from "./eslintService.js";
 import { generateReviewWithLLM } from "./llmService.js";
 import { buildReviewPrompt } from "./promptBuilderService.js";
+import { validateLLMResponse } from "./llmResponseValidationService.js";
 
 import { enrichAlertsWithContext } from "./contextEnrichmentService.js";
 
@@ -112,53 +113,90 @@ export async function buildGenerationPreview({
   environment,
   maxContexts = 3,
 }) {
-  const preview = await buildPromptPreview({
+  const evidence = await buildReviewEvidence({
     code,
     filename,
     environment,
     maxContexts,
   });
 
-  if (preview.evidence.alertCount === 0) {
+  const evidenceSummary = buildEvidenceSummary(evidence);
+
+  const prompt = buildReviewPrompt({
+    code,
+    evidence,
+  });
+
+  if (evidence.analysis.alerts.length === 0) {
     return {
-      evidence: preview.evidence,
+      evidence: evidenceSummary,
 
       prompt: {
-        version: preview.prompt.version,
+        version: prompt.version,
 
-        metadata: preview.prompt.metadata,
+        metadata: prompt.metadata,
       },
 
       generation: {
         skipped: true,
         reason: "no_static_alerts",
       },
+
+      validation: {
+        valid: true,
+        stage: "generation_skipped",
+        data: {
+          reviews: [],
+        },
+        errors: [],
+      },
     };
   }
 
   const generation = await generateReviewWithLLM({
-    systemPrompt: preview.prompt.systemPrompt,
+    systemPrompt: prompt.systemPrompt,
 
-    userPrompt: preview.prompt.userPrompt,
+    userPrompt: prompt.userPrompt,
+  });
+
+  const validation = validateLLMResponse({
+    outputText: generation.outputText,
+
+    alerts: evidence.analysis.alerts,
   });
 
   return {
-    evidence: preview.evidence,
+    evidence: evidenceSummary,
 
     prompt: {
-      version: preview.prompt.version,
+      version: prompt.version,
 
-      metadata: preview.prompt.metadata,
+      metadata: prompt.metadata,
     },
 
     generation,
+
+    validation,
   };
 }
-
 function resolveFilename(filename, environment) {
   if (filename) {
     return filename;
   }
 
   return environment === "react" ? "snippet.jsx" : "snippet.js";
+}
+
+function buildEvidenceSummary(evidence) {
+  return {
+    environment: evidence.environment,
+
+    filename: evidence.filename,
+
+    alertCount: evidence.retrieval.alertCount,
+
+    alertsWithContext: evidence.retrieval.alertsWithContext,
+
+    totalContexts: evidence.retrieval.totalContexts,
+  };
 }

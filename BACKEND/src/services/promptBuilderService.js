@@ -67,7 +67,9 @@ function buildSystemPrompt() {
     "",
     "11. Não produza comentários para problemas que não estejam representados nos alertas fornecidos.",
     "",
-    "12. Retorne exclusivamente JSON válido, sem Markdown, explicações adicionais ou texto fora da estrutura solicitada.",
+    "12. Produza todos os campos textuais gerados, especialmente description, justification e suggestion, em português do Brasil. Preserve nomes técnicos, identificadores de regras, APIs e nomes próprios quando necessário.",
+    "",
+    "13. Retorne exclusivamente JSON válido, sem Markdown, explicações adicionais ou texto fora da estrutura solicitada.",
   ].join("\n");
 }
 
@@ -80,6 +82,8 @@ function buildUserPrompt({
 }) {
   const payload = {
     task: "Produza comentários estruturados de revisão de código com base nas evidências fornecidas.",
+
+    responseLanguage: "pt-BR",
 
     sourceCode: {
       filename,
